@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sairam Pilot Biogas Plant</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #d1f8ee 0%,
+          #b6efd8 50%,
+          #a8e6cf 100%
+        );
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        text-align: center;
+        padding: 40px;
+        min-height: 100vh;
+      }
+      .title {
+        background: linear-gradient(135deg, #d5f2e3, #c8ead3);
+        padding: 20px;
+        font-size: 32px;
+        font-weight: bold;
+        color: #111;
+        margin-bottom: 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .cards {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        flex-wrap: wrap;
+      }
+      .card {
+        width: 140px;
+        height: 140px;
+        background: linear-gradient(
+          135deg,
+          #4dd0e1 0%,
+          #26c6da 50%,
+          #26a69a 100%
+        );
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      }
+      .card i {
+        font-size: 26px;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .label {
+        margin-top: 12px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #2e7d5a;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+      @media (max-width: 768px) {
+        .cards {
+          gap: 30px;
+        }
+        .card {
+          width: 120px;
+          height: 120px;
+        }
+        .title {
+          font-size: 24px;
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title">SAIRAM PILOT BIOGAS PLANT</div>
+    <div class="cards">
+      <div>
+        <div class="card">
+          <i class="fas fa-tachometer-alt"></i>
+          <div id="ph">--</div>
+        </div>
+        <div class="label">pH</div>
+      </div>
+      <div>
+        <div class="card">
+          <i class="fas fa-temperature-high"></i>
+          <div id="temp">--°C</div>
+        </div>
+        <div class="label">TEMPERATURE</div>
+      </div>
+      <div>
+        <div class="card">
+          <i class="fas fa-gauge-high"></i>
+          <div id="press1">-- kPa</div>
+        </div>
+        <div class="label">PRESSURE 1</div>
+      </div>
+      <div>
+        <div class="card">
+          <i class="fas fa-gauge-high"></i>
+          <div id="press2">-- kPa</div>
+        </div>
+        <div class="label">PRESSURE 2</div>
+      </div>
+      <div>
+        <div class="card">
+          <i class="fas fa-gauge-high"></i>
+          <div id="press3">-- kPa</div>
+        </div>
+        <div class="label">PRESSURE 3</div>
+      </div>
+    </div>
+
+    <script>
+      function updateValues() {
+        fetch("/data") // Or: 'http://<ESP_IP>:5000/data'
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("ph").textContent = data.ph;
+            document.getElementById("temp").textContent =
+              data.temperature + "°C";
+            document.getElementById("press1").textContent =
+              data.pressure1 + " kPa";
+            document.getElementById("press2").textContent =
+              data.pressure2 + " kPa";
+            document.getElementById("press3").textContent =
+              data.pressure3 + " kPa";
+          })
+          .catch((err) => {
+            console.warn("Data fetch failed:", err);
+            // Do not simulate — just keep last known values
+          });
+      }
+
+      setInterval(updateValues, 2000);
+      updateValues();
+    </script>
+  </body>
+</html>
