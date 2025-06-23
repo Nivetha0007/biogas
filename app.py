@@ -1,30 +1,29 @@
-from flask import Flask, jsonify, render_template
-import requests
-import json
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
+latest_data = {
+    "ph": "--",
+    "temperature": "--",
+    "pressure1": "--",
+    "pressure2": "--",
+    "pressure3": "--"
+}
 
-ESP8266_IP = "http://172.16.127.205/data"  # ESP's endpoint
+@app.route("/update", methods=["POST"])
+def update_data():
+    global latest_data
+    data = request.get_json()
+    print("Received:", data)
+    latest_data = data
+    return jsonify({"status": "success"})
 
 @app.route("/data")
 def fetch_esp_data():
-    try:
-        response = requests.get(ESP8266_IP, timeout=2)
-        data = json.loads(response.text.strip())  # Strip extra chars
-        return jsonify(data)
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({
-            "ph": "--",
-            "temperature": "--",
-            "pressure1": "--",
-            "pressure2": "--",
-            "pressure3": "--"
-        })
+    return jsonify(latest_data)
 
 @app.route("/")
 def index():
-    return render_template("index.html")  # if using templates folder
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
